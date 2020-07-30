@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-create-topic
+  labels: 
+    component: kafka
+spec:
+#  ttlSecondsAfterFinished: 100
+  backoffLimit: 3
+  activeDeadlineSeconds: 100
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: kafka-create-topic
+        image: khteh/kafka-client:latest
+        command: ["./kafka-topics.sh", "--command-config", "/tmp/kafka.properties", "--bootstrap-server", "svc-kafka.kafka-event-streaming:9093", "--topic", "$TOPIC_NAME", "--create", "--partitions", "10", "--replication-factor", "3", "--config", "min.insync.replicas=2"]

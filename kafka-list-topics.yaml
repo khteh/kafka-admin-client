@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-list-topics
+  labels: 
+    component: kafka
+spec:
+#  ttlSecondsAfterFinished: 100
+  backoffLimit: 3
+  activeDeadlineSeconds: 100
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: kafka-list-topics
+        image: khteh/kafka-client:latest
+        command: ["./kafka-topics.sh", "--command-config", "/tmp/kafka.properties", "--bootstrap-server", "svc-kafka.kafka-event-streaming:9093", "--list"]
